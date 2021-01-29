@@ -64,7 +64,7 @@ selected_transaction = st.sidebar.multiselect('Transaction Type', sorted_unique_
 df_filtered = clean_table[(clean_table['Transaction Type'].isin(selected_transaction)) ]
 
 slider_1, slider_2 = st.sidebar.slider(
-'Select Fiscal Years', df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max(), (df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max()))
+'Select Fiscal Years', df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max(), (float(df_filtered['Fiscal Year'].min()), float(df_filtered['Fiscal Year'].max())))
 filtered_df = df_filtered.loc[(df_filtered["Fiscal Year"] >= slider_1) & (df_filtered['Fiscal Year']<=slider_2),:]
 
 # Sidebar - Team selection
