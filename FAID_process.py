@@ -145,7 +145,7 @@ with st.sidebar.beta_expander("Click to learn more about the data source"):
 
 
 def filedownload(df):
-    We csv = df.to_csv(index=False)
+    csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
     href = f'<a href="data:file/csv;base64,{b64}">Download Data as CSV File</a>'
     return href
