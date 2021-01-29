@@ -52,7 +52,7 @@ def load_data(file):
     df = df[df['Fiscal Year']>2010]
     return df
 
-file = 'Financial_Data_12012020.xlsx'
+file = 'mydata.xlsx'
 clean_table = load_data(file)
 
 # Sidebar - Team selection
