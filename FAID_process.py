@@ -127,27 +127,27 @@ with st.sidebar.beta_expander("Click to learn more about the data source"):
 
 # HACK This only works when we've installed streamlit with pipenv, so the
 # permissions during install are the same as the running process
-STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / 'static'
+#STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / 'static'
 # We create a downloads directory within the streamlit static asset directory
 # and we write output files to it
-DOWNLOADS_PATH = (STREAMLIT_STATIC_PATH / "downloads")
-if not DOWNLOADS_PATH.is_dir():
-    DOWNLOADS_PATH.mkdir()
+#DOWNLOADS_PATH = (STREAMLIT_STATIC_PATH / "downloads")
+#if not DOWNLOADS_PATH.is_dir():
+#    DOWNLOADS_PATH.mkdir()
 
 
-def main():
-    st.markdown('## Download option')
-    st.markdown("### Once you completed your selection you can download the data [here](downloads/mydata.csv)")
-    filtered_df_final.to_csv(str(DOWNLOADS_PATH / "mydata.csv"), index=False)
+#def main():
+    #st.markdown('## Download option')
+    #st.markdown("### Once you completed your selection you can download the data [here](downloads/mydata.csv)")
+    #filtered_df_final.to_csv(str(DOWNLOADS_PATH / "mydata.csv"), index=False)
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
 
 
 def filedownload(df):
     We csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    href = <a href="data:file/csv;TREAMLIT_STATIC_PATH/downloads download="mydata.csv">Download CSV File</a>'
+    href = f'<a href="data:file/csv;base64,{b64}">Download Data as CSV File</a>'
     return href
 
 st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
