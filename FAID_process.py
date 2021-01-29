@@ -5,6 +5,7 @@ import re
 import base64
 import pathlib
 import altair as alt
+import xlrd
 
 st.set_page_config(
     page_title="FAID Download Portal",
