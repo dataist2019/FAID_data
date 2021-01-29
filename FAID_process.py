@@ -4,9 +4,28 @@ import datetime
 import re
 import base64
 import pathlib
+import altair as alt
 
-st.title('FAID Data')
+st.set_page_config(
+    page_title="FAID Download Portal",
+    layout='wide',
+    initial_sidebar_state='auto',
+)
 
+t1, t2 = st.beta_columns(2)
+with t1:
+    st.markdown('# FAID Data')
+
+with t2:
+    st.write("")
+    st.write("")
+    st.write("""
+    **Guidehouse** | National Security Segment | FA.gov/FADR Team
+    """)
+
+#st.title('FAID Data')
+st.write('')
+st.write("")
 st.markdown("""
 This app allows users to easily download FAID data to respond to data calls
 FAID uses FAE data and improves it by applying business rules identified by F stakeholders
@@ -44,7 +63,7 @@ selected_transaction = st.sidebar.multiselect('Transaction Type', sorted_unique_
 df_filtered = clean_table[(clean_table['Transaction Type'].isin(selected_transaction)) ]
 
 slider_1, slider_2 = st.sidebar.slider(
-'Select a range of values', df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max(), (df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max()))
+'Select Fiscal Years', df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max(), (df_filtered['Fiscal Year'].min(), df_filtered['Fiscal Year'].max()))
 filtered_df = df_filtered.loc[(df_filtered["Fiscal Year"] >= slider_1) & (df_filtered['Fiscal Year']<=slider_2),:]
 
 # Sidebar - Team selection
@@ -55,10 +74,55 @@ selected_transaction_2 = st.sidebar.multiselect('Bureau', sorted_unique_bureau, 
 filtered_df_final = filtered_df[(filtered_df['Bureau'].isin(selected_transaction_2)) ]
 
 
-st.header('FAID Table')
-st.write('Data Dimension: ' + str(filtered_df_final.shape[0]) + ' rows and ' + str(filtered_df_final.shape[1]) + ' columns.')
+st.write("""
+## Summary results
+Please use the table and chart below to review results and corroborate the data is accurate
+
+""")
+st.write('*Data Dimension: ' + str(filtered_df_final.shape[0]) + ' rows and ' + str(filtered_df_final.shape[1]) + ' columns.*')
 #st.dataframe(filtered_df_final)
 #st.table(filtered_df_final)
+
+
+filtered_df_final['FY'] = pd.to_datetime(filtered_df_final['Fiscal Year'])
+
+new_df = filtered_df_final.groupby(['Fiscal Year', 'Transaction Type'])['Amount'].sum()
+new_df = new_df.reset_index()
+new_df = pd.DataFrame(new_df)
+df_pivot = new_df.pivot(values='Amount', index='Fiscal Year', columns='Transaction Type')
+#st.dataframe(new_df)
+
+q1, q2 = st.beta_columns((1,2))
+with q1:
+    st.write('**Table**')
+    st.table(df_pivot)
+
+with q2:
+    st.write('**Bar Chart**')
+    alt.themes.enable("ggplot2")
+    range_ = ['#fd9714','steelblue']
+    p = alt.Chart(new_df).mark_bar().encode(alt.X('Transaction Type:N', title=''), alt.Y('Amount:Q', title='Amount in $'), alt.Color('Transaction Type:N', scale=alt.Scale(range=range_)), alt.Column('Fiscal Year:O', title=''), tooltip = ['Transaction Type', 'Fiscal Year', 'Amount']).properties(width=alt.Step(30)).configure_axis(
+    grid=False
+).configure_view(
+    strokeWidth=0
+)
+    st.altair_chart(p, use_container_width=False)
+#st.table(df_pivot)
+#st.bar_chart(new_df)
+#alt.themes.enable("ggplot2")
+#p = alt.Chart(new_df).mark_bar().encode(alt.X('Transaction Type:N', title=''), alt.Y('Amount:Q', title='Amount in $'), alt.Color('Transaction Type:N'), alt.Column('Fiscal Year:O')).properties(width=alt.Step(60))
+#st.altair_chart(p, use_container_width=False)
+#st.write(p, use_container_width=True)
+#st.line_chart(filtered_df_final.Amount)
+
+with st.sidebar.beta_expander("Click to learn more about the data source"):
+    st.markdown("""
+    FAE data includes a few Treasury Accounts that F does not consider related to foreign assistance. Thus, FAID does not include the following accounts: *Foreign National Employees Separation*, *The White House*, and *Diplomatic and Consular*
+
+    The F-DATA Team used a country/operating unit crosswalk to modify country names and match DOS country convention. The same crosswalk was used to add a *Bureau* column.
+
+    Click here to review additional documentation for **[FAE](https://explorer.usaid.gov/data)**
+    """)
 
 # HACK This only works when we've installed streamlit with pipenv, so the
 # permissions during install are the same as the running process
@@ -69,8 +133,10 @@ DOWNLOADS_PATH = (STREAMLIT_STATIC_PATH / "downloads")
 if not DOWNLOADS_PATH.is_dir():
     DOWNLOADS_PATH.mkdir()
 
+
 def main():
-    st.markdown("Download from [downloads/mydata.csv](downloads/mydata.csv)")
+    st.markdown('## Download option')
+    st.markdown("### Once you completed your selection you can download the data [here](downloads/mydata.csv)")
     filtered_df_final.to_csv(str(DOWNLOADS_PATH / "mydata.csv"), index=False)
 
 if __name__ == "__main__":
@@ -84,9 +150,3 @@ if __name__ == "__main__":
     #return href
 
 #st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
-
-filtered_df_final['FY'] = pd.to_datetime(filtered_df_final['Fiscal Year'])
-
-#st.line_chart(filtered_df_final.Amount)
-#‎st.markdown("Download from [downloads/mydata.csv](downloads/mydata.csv)")
-#mydataframe.to_csv(str(DOWNLOADS_PATH / "mydata.csv"), index=False)
