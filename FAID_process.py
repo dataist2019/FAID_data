@@ -144,10 +144,10 @@ if __name__ == "__main__":
     main()
 
 
-#def filedownload(df):
-    #We csv = df.to_csv(index=False)
-    #b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    #href = <a href="data:file/csv;TREAMLIT_STATIC_PATH/downloads download="mydata.csv">Download CSV File</a>'
-    #return href
+def filedownload(df):
+    We csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
+    href = <a href="data:file/csv;TREAMLIT_STATIC_PATH/downloads download="mydata.csv">Download CSV File</a>'
+    return href
 
-#st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
+st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
