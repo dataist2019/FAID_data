@@ -144,10 +144,10 @@ with st.sidebar.beta_expander("Click to learn more about the data source"):
     #main()
 
 
-def filedownload(df):
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    href = f'<a href="data:file/csv;base64,{b64}">Download Data as CSV File</a>'
-    return href
+#def filedownload(df):
+    #csv = df.to_csv(index=False)
+    #b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
+    #href = f'<a href="data:file/csv;base64,{b64}">Download Data as CSV File</a>'
+    #return href
 
-st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
+#st.markdown(filedownload(filtered_df_final), unsafe_allow_html=True)
